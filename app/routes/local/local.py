@@ -18,7 +18,7 @@ from app.gear.validation_mail.validation_mail import validate_email
 from app.gear.turnos.turnos_mailer import send_turno_mail
 from app.main import get_db
 from app.routes import auth
-from app.routes.common import router_local
+from app.routes.common import router_local, router_tgd
 from app.schemas.admin_status import AdminStatus
 from app.schemas.category import Category
 from app.schemas.gender import Gender
@@ -63,15 +63,23 @@ async def login_for_access_token(
     return auth.login_for_access_token(db, form_data)
 
 
-@router_local.post(
-    "/token-tgd",
-    response_model=Token,
+@router_tgd.post(
+    "auth-tgd",
     responses={401: {"model": HTTPError}},
-    tags=["Login & Logout"],
+    tags=["TGD"],
 )
 async def get_token_tgd(code: str):
     return get_token_tgd.get_token_tgd(code)
 
+"""
+@router_tgd.post(
+    "token-tgd",
+    responses={401: {"model": HTTPError}},
+    tags=["TGD"],
+)
+async def get_token_tgd(code: str):
+    return get_token_tgd.get_token_tgd(code)
+"""
 
 @router_local.post(
     "/login-tgd",
