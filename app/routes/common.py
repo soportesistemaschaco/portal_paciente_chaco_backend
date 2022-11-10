@@ -13,6 +13,11 @@ router_local = APIRouter(
     responses={404: {"description": "Not Found"}}
 )
 
+router_tgd = APIRouter(
+    prefix="/",
+    responses={404: {"description": "Not Found"}}
+)
+
 router_admin = APIRouter(
     tags=["Admin"],
     prefix=LR_BASE_API,
