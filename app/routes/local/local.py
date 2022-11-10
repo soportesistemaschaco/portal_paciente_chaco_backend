@@ -64,7 +64,7 @@ async def login_for_access_token(
 
 
 @router_tgd.post(
-    "auth-tgd",
+    "/auth-tgd",
     responses={401: {"model": HTTPError}},
     tags=["TGD"],
 )

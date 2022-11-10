@@ -14,7 +14,7 @@ router_local = APIRouter(
 )
 
 router_tgd = APIRouter(
-    prefix="/",
+    prefix="",
     responses={404: {"description": "Not Found"}}
 )
 
