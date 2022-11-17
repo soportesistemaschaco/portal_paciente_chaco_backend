@@ -52,6 +52,7 @@ app.include_router(hsi.router_hsi)
 app.include_router(local.router_local)
 app.include_router(admin.router_admin)
 app.include_router(sumar.router_sumar)
+app.include_router(local.router_tgd)
 
 from fastapi.staticfiles import StaticFiles
 from app.config.config import LOCAL_FILE_DOWNLOAD_DIRECTORY
