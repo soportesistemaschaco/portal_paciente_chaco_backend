@@ -2,6 +2,13 @@ from typing import Optional
 from pydantic import BaseModel, validator
 from datetime import datetime
 
+class CreatePersonUser(BaseModel):
+    username: Optional[str]
+    password: Optional[str]
+    id_person: Optional[int]
+    id_user_status: Optional[int]
+
+
 
 class PersonUser(BaseModel):
     id: Optional[int]

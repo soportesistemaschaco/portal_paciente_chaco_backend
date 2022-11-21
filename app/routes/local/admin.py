@@ -15,6 +15,51 @@ from app.main import get_db
 from app.routes.common import router_admin
 from app.schemas.persons import PersonUsername, PersonsReduced
 from app.schemas.returned_object import ReturnMessage
+from app.schemas.responses import ResponseOK, ResponseNOK
+from app.schemas.person_user import (
+    PersonUser as schema_person_user,
+    CreatePersonUser as schema_create_person_user,
+)
+from app.gear.local.local_impl import LocalImpl
+
+@router_admin.post(
+    "/createpersonuser",
+    name="Crear Usuario Administrador",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User and person"],
+)
+async def create_person(personUser: schema_create_person_user, db: Session = Depends(get_db)):
+    return LocalImpl(db).create_person(personUser)
+
+@router_admin.get(
+    "/getpersonuserbyid",
+    response_model=schema_person_user,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User and person"],
+)
+async def get_person_by_id(person_id: int, db: Session = Depends(get_db)):
+    return LocalImpl(db).get_person_by_id(person_id)
+
+@router_admin.put(
+    "/updatepersonuser",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User and person"],
+)
+async def update_person(person: schema_person_user, db: Session = Depends(get_db)):
+    return LocalImpl(db).update_person(person)
+
+
+@router_admin.put(
+    "/deletepersonuser",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User and person"],
+)
+async def delete_person(person_id: int, db: Session = Depends(get_db)):
+    return LocalImpl(db).delete_person(person_id)
+
 
 
 @router_admin.delete("/person", name="Remove a Person",
