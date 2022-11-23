@@ -17,10 +17,21 @@ from app.schemas.persons import PersonUsername, PersonsReduced
 from app.schemas.returned_object import ReturnMessage
 from app.schemas.responses import ResponseOK, ResponseNOK
 from app.schemas.person_user import (
-    PersonUser as schema_person_user,
-    CreatePersonUser as schema_create_person_user,
+    CreatePersonUser as schema_person_user
 )
 from app.gear.local.local_impl import LocalImpl
+from app.schemas.admin_status import AdminStatus
+from app.schemas.role import Role
+
+@router_admin.get(
+    "/getroles",
+    response_model=List[Role],
+    responses={417: {"model": ResponseNOK}},
+    tags=["User and person"],
+)
+async def get_roles(db: Session = Depends(get_db)):
+    return LocalImpl(db).get_roles()
+
 
 @router_admin.post(
     "/createpersonuser",
@@ -29,8 +40,17 @@ from app.gear.local.local_impl import LocalImpl
     responses={417: {"model": ResponseNOK}},
     tags=["User and person"],
 )
-async def create_person(personUser: schema_create_person_user, db: Session = Depends(get_db)):
-    return LocalImpl(db).create_person(personUser)
+async def create_person_and_user(personUser: schema_person_user, db: Session = Depends(get_db)):
+    return LocalImpl(db).create_user(personUser)
+
+@router_admin.get(
+    "/getadminstatus",
+    response_model=List[AdminStatus],
+    responses={417: {"model": ResponseNOK}},
+    tags=["AdminList"],
+)
+async def get_admin_status(db: Session = Depends(get_db)):
+    return LocalImpl(db).get_admin_status()
 
 @router_admin.get(
     "/getpersonuserbyid",
@@ -49,7 +69,7 @@ async def get_person_by_id(person_id: int, db: Session = Depends(get_db)):
 )
 async def update_person(person: schema_person_user, db: Session = Depends(get_db)):
     return LocalImpl(db).update_person(person)
-
+####################
 
 @router_admin.put(
     "/deletepersonuser",
