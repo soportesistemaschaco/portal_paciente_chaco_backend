@@ -50,6 +50,9 @@ class Person(BaseModel):
         orm_mode = True
 
 
+   
+
+
 class CreatePerson(BaseModel):
     id: Optional[int]
     surname: Optional[str]
