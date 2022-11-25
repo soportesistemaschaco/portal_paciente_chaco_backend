@@ -41,6 +41,7 @@ WHITE_LIST_PATH = (
     "/openapi.json",
     "/favicon.ico",
     "/",
+    "/auth-tgd"
 )
 
 VALIDATE_EMAIL_PATH = LR_BASE_API + "/validate-email"
