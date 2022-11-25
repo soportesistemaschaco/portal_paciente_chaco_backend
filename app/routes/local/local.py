@@ -63,13 +63,13 @@ async def login_for_access_token(
     return auth.login_for_access_token(db, form_data)
 
 
-@router_tgd.post(
+@router_tgd.get(
     "/auth-tgd",
     responses={401: {"model": HTTPError}},
     tags=["TGD"],
 )
-async def get_token_tgd(code: str):
-    return get_token_tgd.get_token_tgd(code)
+async def get_tgd(code: str, state: str = ""):
+    return get_token_tgd.get_token_tgd(code), 200
 
 """
 @router_tgd.post(
