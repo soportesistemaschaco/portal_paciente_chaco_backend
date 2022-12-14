@@ -2,7 +2,7 @@ import requests
 import json
 from typing import Dict
 
-from app.gear.hcd_chaco.config import API_KEY, API_CODE, TURNO_ENDPOINT, HC_ENDPOINT, GENDER_ENDPOINT, DOCUMENT_ENDPOINT
+from app.gear.hcd.config import API_KEY, API_CODE, TURNO_ENDPOINT, HC_ENDPOINT, GENDER_ENDPOINT, DOCUMENT_ENDPOINT
 
 
 class HSIImplChaco:

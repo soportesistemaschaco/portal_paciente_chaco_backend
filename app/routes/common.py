@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from app.config.config import LR_BASE_API
 
 
-router_hsi = APIRouter(
+router_hcd = APIRouter(
     prefix=LR_BASE_API,
     responses={404: {"description": "Not Found"}}
 )

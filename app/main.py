@@ -19,12 +19,10 @@ def get_db():
 
 # endregion
 
-from app.routes.hsi import hsi
 from app.routes.local import local
 from app.routes.local import admin
-from app.routes.sumar import sumar
 from app.routes.hcd import hcd
-from app.routes.sumar_chaco import sumar_chaco
+from app.routes.sumar import sumar
 from app.config.config import LR_BASE_API
 
 app = FastAPI(
@@ -50,13 +48,11 @@ app.add_middleware(
 
 # endregion
 
-app.include_router(hsi.router_hsi)
 app.include_router(local.router_local)
 app.include_router(admin.router_admin)
-app.include_router(sumar.router_sumar)
 app.include_router(local.router_tgd)
-app.include_router(hcd.router_hsi)
-app.include_router(sumar_chaco.router_sumar)
+app.include_router(hcd.router_hcd)
+app.include_router(sumar.router_sumar)
 
 from fastapi.staticfiles import StaticFiles
 from app.config.config import LOCAL_FILE_DOWNLOAD_DIRECTORY

@@ -1,3 +1,12 @@
 import os
 
-SUMAR_DATABASE_URL = os.getenv("SUMAR_DATABASE_URL")
+# CREDENTIALS
+SUMAR_USERNAME = os.getenv("SUMAR_USERNAME")
+SUMAR_PASSWORD = os.getenv("SUMAR_PASSWORD")
+
+# API SUMAR
+API_SUMAR = "http://sumar.chaco.gov.ar/api/"
+LOGIN_ENDPOINT = f"{API_SUMAR}login"
+ME_ENDPOINT = f"{API_SUMAR}me"
+PRESTACIONES_ENDPOINT = f"{API_SUMAR}prestaciones"
+EFECTORES_ENDPOINT = f"{API_SUMAR}efectores"
