@@ -1,6 +1,6 @@
 from typing import Dict
 
-from app.gear.sumar_chaco.sumar_impl import SumarImplChaco, Vacunacion
+from app.gear.sumar.sumar_impl import SumarImplChaco, Vacunacion
 from app.routes.common import router_sumar
 
 

@@ -1,7 +1,7 @@
 import requests
 import json
 
-from app.gear.sumar_chaco.config import SUMAR_USERNAME, SUMAR_PASSWORD, LOGIN_ENDPOINT
+from app.gear.sumar.config import SUMAR_USERNAME, SUMAR_PASSWORD, LOGIN_ENDPOINT
 
 
 class SumarChacoLogin:

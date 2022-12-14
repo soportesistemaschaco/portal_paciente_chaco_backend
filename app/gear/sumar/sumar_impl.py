@@ -2,8 +2,8 @@ import requests
 import json
 from typing import Dict
 
-from app.gear.sumar_chaco.config import ME_ENDPOINT, PRESTACIONES_ENDPOINT, EFECTORES_ENDPOINT
-from app.gear.sumar_chaco.login import SumarChacoLogin
+from app.gear.sumar.config import ME_ENDPOINT, PRESTACIONES_ENDPOINT, EFECTORES_ENDPOINT
+from app.gear.sumar.login import SumarChacoLogin
 
 
 class SumarImplChaco:
