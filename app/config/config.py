@@ -37,6 +37,8 @@ WHITE_LIST_PATH = (
     LR_BASE_API + "/login-admin",
     LR_BASE_API + "/logout",
     LR_BASE_API + "/static",
+    LR_BASE_API + "/efectores",
+    LR_BASE_API + "/documenttype",
     "/docs",
     "/openapi.json",
     "/favicon.ico",
