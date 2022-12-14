@@ -1,6 +1,6 @@
 from typing import Dict
 
-from app.gear.hcd_chaco.hcd_impl import HSIImplChaco
+from app.gear.hcd.hcd_impl import HSIImplChaco
 from app.routes.common import router_hcd
 
 
