@@ -1,17 +1,19 @@
 import requests
 import json
+from typing import Dict
 
-API = "http://stage.ventanillaunica.chaco.gov.ar/oauth/v2/token?"
-GRANT_TYPE = "authorization_code"
-CLIENT_ID = "109_469fzlhy0084gkscg4gsk8k88ow4kgggso8s44ososo80ccos8"
-CLIENT_SECRET = "1pnatc2ds77ocoggsk0gw4ccsw4gswoocows40ogcww4owg0c8"
-REDIRECT_URI = "http://201.217.244.105:8000/auth-tgd"
+from app.auth_tgd.config import TGD_API, GRANT_TYPE, CLIENT_ID, CLIENT_SECRET, REDIRECT_URI, PERSONA_ENDPOINT
 
 
-def get_token_tgd(code: str):
-    url = f"{API}grant_type={GRANT_TYPE}&client_id={CLIENT_ID}&client_secret={CLIENT_SECRET}&redirect_uri={REDIRECT_URI}&code={code}"
-
-    print(url)
-    response = requests.get(url)
-    print(response.text)
-    return {"msg": response.text}
+class AuthTgd:
+    @staticmethod
+    def get_token_tgd(code: str) -> Dict:
+        url = f"{TGD_API}grant_type={GRANT_TYPE}" \
+              f"&client_id={CLIENT_ID}" \
+              f"&client_secret={CLIENT_SECRET}" \
+              f"&redirect_uri={REDIRECT_URI}" \
+              f"&code={code}"
+        response_code = requests.get(url)
+        token = json.loads(response_code.text)
+        response = requests.get(PERSONA_ENDPOINT, headers={"Authorization": f"Bearer {token['access_token']}"})
+        return json.loads(response.text)
