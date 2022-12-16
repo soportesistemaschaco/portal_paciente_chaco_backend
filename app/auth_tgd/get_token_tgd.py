@@ -16,4 +16,5 @@ class AuthTgd:
         response_code = requests.get(url)
         token = json.loads(response_code.text)
         response = requests.get(PERSONA_ENDPOINT, headers={"Authorization": f"Bearer {token['access_token']}"})
+        print(response.text)
         return json.loads(response.text)
