@@ -1,0 +1,9 @@
+import os
+
+# CREDENTIALS
+TGD_API = os.getenv("TGD_API")
+GRANT_TYPE = os.getenv("GRANT_TYPE")
+CLIENT_ID = os.getenv("CLIENT_ID")
+CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
+PERSONA_ENDPOINT = os.getenv("PERSONA_ENDPOINT")
