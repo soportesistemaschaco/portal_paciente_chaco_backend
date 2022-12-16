@@ -35,8 +35,7 @@ from app.schemas.responses import HTTPError
 from app.schemas.responses import ResponseOK, ResponseNOK
 from app.schemas.role import Role
 from app.schemas.token import Token
-from app.auth_tgd import get_token_tgd
-from app.auth_tgd import auth_tgd
+from app.auth_tgd.get_token_tgd import AuthTgd
 
 oauth_schema = OAuth2PasswordBearer(tokenUrl="/login")
 
@@ -68,25 +67,9 @@ async def login_for_access_token(
     responses={401: {"model": HTTPError}},
     tags=["TGD"],
 )
-async def get_tgd(code: str, state: str = ""):
-    return get_token_tgd.get_token_tgd(code), 200
-
-"""
-@router_tgd.post(
-    "token-tgd",
-    responses={401: {"model": HTTPError}},
-    tags=["TGD"],
-)
-async def get_token_tgd(code: str):
-    return get_token_tgd.get_token_tgd(code)
-"""
-
-@router_local.post(
-    "/login-tgd",
-    tags=["Login & Logout"],
-)
-async def auth_tgd(token: str):
-    return auth_tgd.auth_tgd(token)
+async def get_tgd(code: str):
+    auth_tgd = AuthTgd()
+    return auth_tgd.get_token_tgd(code)
 
 
 @router_local.post(
