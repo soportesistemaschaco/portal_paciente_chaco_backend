@@ -19,7 +19,7 @@ class Person(Base):
     id_locality = Column(Integer, nullable=True)
     address_street = Column(String(250), nullable=False)
     address_number = Column(String(100), nullable=False)
-    id_usual_institution = Column(Integer, nullable=False)
+    id_usual_institution = Column(String, nullable=False)
     is_diabetic = Column(Boolean, nullable=False)
     is_hypertensive = Column(Boolean, nullable=False)
     is_chronic_respiratory_disease = Column(Boolean, nullable=False)
@@ -42,7 +42,7 @@ class Person(Base):
 
     def __init__(
         self, id: int, surname: str, name: str, identification_number: str, birthdate: datetime, id_gender: int,
-            id_department: int, id_locality: int, address_street: str, address_number: str, id_usual_institution: int,
+            id_department: int, id_locality: int, address_street: str, address_number: str, id_usual_institution: str,
             is_diabetic: bool, is_hypertensive: bool, is_chronic_respiratory_disease: bool,
             is_chronic_kidney_disease: bool, identification_number_master: str, id_identification_type: int,
             id_identification_type_master: int, is_deleted: bool, id_patient: int, id_admin_status: int,
