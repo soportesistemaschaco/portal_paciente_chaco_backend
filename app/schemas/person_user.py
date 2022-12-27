@@ -14,7 +14,7 @@ class PersonUser(BaseModel):
     id_locality: Optional[int]
     address_street: Optional[str]
     address_number: Optional[str]
-    id_usual_institution: Optional[int]
+    id_usual_institution: Optional[str]
     is_diabetic: Optional[bool]
     is_hypertensive: Optional[bool]
     is_chronic_respiratory_disease: Optional[bool]
