@@ -388,10 +388,12 @@ CREATE TABLE `user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `username` varchar(100) COLLATE latin1_spanish_ci NULL,
   `password` varchar(500) COLLATE latin1_spanish_ci NULL DEFAULT '',
-  `id_person` bigint(20) NULL,
+  `id_person` bigint(20) NOT NULL,
   `id_user_status` bigint(20) NULL,
   `is_admin` bigint(20) NULL DEFAULT 0,
   `is_mail_validate` bigint(20) NULL DEFAULT 0,
+  `id_role` bigint(20) NULL DEFAULT 0,
+  
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1 COLLATE=latin1_spanish_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -402,10 +404,10 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`) VALUES (1,'admin','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',1,1);
-INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`) VALUES (2,'earias','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',2,1);
-INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`) VALUES (3,'oocanto','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',3,1);
-INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`) VALUES (4,'esabato','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',4,1);
+INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`,`is_admin`,`id_role`) VALUES (1,'admin','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',1,1,1,1);
+INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`,`id_role`) VALUES (2,'earias','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',2,1,1);
+INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`,`id_role`) VALUES (3,'oocanto','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',3,1,1);
+INSERT INTO `user` (`id`, `username`, `password`, `id_person`, `id_user_status`,`id_role`) VALUES (4,'esabato','$2b$12$nW9bzZJggFAyYYI.soU8GurU.0g82ftRBNfn.v9vtIDWmt/RJdgr2',4,1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -530,3 +532,4 @@ UNLOCK TABLES;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2022-02-08 17:20:47
+

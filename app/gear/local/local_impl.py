@@ -42,6 +42,7 @@ from app.schemas.person import (
 from app.schemas.person_user import PersonUser as schema_person_user
 from app.schemas.responses import ResponseNOK, ResponseOK
 from app.schemas.user import User as schema_user
+from app.schemas.user import Userup as schema_userup
 
 
 class LocalImpl:
@@ -142,7 +143,7 @@ class LocalImpl:
             value = self.db.query(model_user).where(model_user.id == user_id).first()
         except Exception as e:
             self.log.log_error_message(e, self.module)
-            return ResponseNOK(message="User cannot be retrieved.", code=202)
+            return ResponseNOK(message="User Admin cannot be retrieved.", code=202)
         return value
 
     def get_user_by_username(self, username: str):
@@ -477,6 +478,59 @@ class LocalImpl:
             self.log.log_error_message(e, self.module)
             return ResponseNOK(value="", message="Person not created.", code=417)
 
+    def get_user_admin_collection(self):
+        try:
+            result = []
+            collection = self.db.query(model_user).all()
+
+            for u in collection:
+                result.append({
+                "id": u.id, 
+                "username": u.username, 
+                "password": u.password, 
+                "id_person": u.id_person,
+                "id_user_status": u.id_user_status,
+                "id_role": u.id_role
+                })
+            return result
+        except Exception as e:
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message=f"Error: {str(e)}", code=417)
+
+
+
+    def update_user(self, user: schema_user) -> Union[ResponseOK, ResponseNOK]:
+        print("prueba1",user)
+        
+        try:
+            updated_user = model_user(user.update_forward_refs())
+            
+            print("prueba2",updated_user)
+           
+            existing_user = (
+                self.db.query(model_user)
+                .where(model_user.id_person == updated_user.id_person)
+                .first()
+            )
+
+            existing_user.username: updated_user.username
+            existing_user.password: updated_user.password
+            existing_user.id_user_status: updated_user.id_user_status
+            existing_user.id_role: updated_user.id_role
+
+            self.db.commit()
+            return ResponseOK(
+                value=str(existing_user.id),
+                message="User admin updated successfully.",
+                code=201,
+            )
+
+        except Exception as e:
+            self.db.rollback()
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message="User admin cannot be updated.", code=417)
+        
+
     def update_person(self, person: schema_person) -> Union[ResponseOK, ResponseNOK]:
         try:
             updated_person = model_person(**person.dict())
@@ -522,8 +576,11 @@ class LocalImpl:
             existing_person.locality = updated_person.locality
             existing_person.email = updated_person.email
             existing_person.id_person_status = updated_person.id_person_status
+          
 
             existing_person.is_deleted = None
+
+            
 
             self.db.commit()
             return ResponseOK(
@@ -554,6 +611,7 @@ class LocalImpl:
 
     def get_person_by_id(self, person_id: int):
         return self.get_person(person_id, None, True)
+
 
     def get_person_by_identification_number(self, person_identification_number: str):
         return self.get_person(0, person_identification_number, False)
@@ -602,6 +660,7 @@ class LocalImpl:
         )
 
         return s_person
+
 
     def get_family_group_by_identification_number_master(
         self, identification_number_master: str
@@ -815,6 +874,27 @@ class LocalImpl:
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message=f"Error: {str(e)}", code=417)
 
+    def get_user_roles(self):
+        try:
+            result = []
+            collection = self.db.query(model_user).all()
+
+            for u in collection:
+                result.append({
+                "id": u.id, 
+                "username": u.username, 
+                "password": u.password, 
+                "id_person": u.id_person,
+                "id_user_status": u.id_user_status,
+                "id_role": u.id_role
+                })
+            
+
+            return result
+        except Exception as e:
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message=f"Error: {str(e)}", code=417)
+
     def get_categories(self):
         try:
             result = []
@@ -959,3 +1039,4 @@ class LocalImpl:
             message="File downloaded successfully.",
             code=201,
         )
+

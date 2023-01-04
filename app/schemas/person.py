@@ -38,6 +38,16 @@ class Person(BaseModel):
     id_person_status: Optional[int]
     family_group: Optional[list]
 
+    #####################
+    # User
+    #####################
+    username: Optional[str]
+    password: Optional[str]
+    id_person: Optional[int]
+    id_user_status: Optional[int]
+    id_role: Optional[int]
+
+
     @validator("birthdate", pre=True)
     def parse_birthdate(cls, value):
         # XXX: Tenemos un problema entre schemas y modelos que no son compatibles
@@ -179,3 +189,4 @@ class PersonLogged(BaseModel):
     access_token: str
     token_type: str
     data: PersonFamily
+

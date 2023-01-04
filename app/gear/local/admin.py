@@ -7,6 +7,7 @@ from app.schemas.persons import PersonsReduced, PersonUsername
 from app.schemas.returned_object import ReturnMessage
 
 
+
 # TODO: dev purpose. remove this
 class Persons():
     username: str
@@ -43,6 +44,7 @@ def list_of_persons(only_accepted: bool, db: Session):
                       model_person.is_deleted,
                       model_person.id_admin_status,
                       model_person.id_person_status,
+                      model_person.id_usual_institution,
                       model_user.username)\
         .join(model_user, model_user.id_person == model_person.id) \
         .where(model_person.is_deleted == None) \
@@ -57,7 +59,8 @@ def list_of_persons(only_accepted: bool, db: Session):
                                                 name=p.name,
                                                 surname=p.surname,
                                                 id_admin_status=p.id_admin_status,
-                                                id_person_status=p.id_person_status))
+                                                id_person_status=p.id_person_status,
+                                                id_usual_institution=p.id_usual_institution))
     return persons_to_return
 
 
@@ -130,4 +133,6 @@ def remove_a_person(person_username: PersonUsername, db: Session):
         return ReturnMessage(message="Person cannot be updated.", code=417)
 
     return ReturnMessage(message="Person updated successfully.", code=201)
+    
+
 

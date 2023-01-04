@@ -11,6 +11,7 @@ class UserFrontEnd(Base):
     password_hash = Column(String(500), nullable=False)
     id_person = Column(Integer, nullable=False)
     id_user_status = Column(Integer, nullable=False)
+    id_role = Column(Integer, nullable=False)
 
     @property
     def password(self):
@@ -24,3 +25,4 @@ class UserFrontEnd(Base):
 
     def check_password(self, password):
         return bcrypt.checkpw(password.encode('utf8'), self.password_hash.encode('utf8'))
+

@@ -15,6 +15,76 @@ from app.main import get_db
 from app.routes.common import router_admin
 from app.schemas.persons import PersonUsername, PersonsReduced
 from app.schemas.returned_object import ReturnMessage
+from app.schemas.responses import ResponseOK, ResponseNOK
+from app.schemas.user import User as user_person
+from app.gear.local.local_impl import LocalImpl
+from app.schemas.person_user import PersonUser as person_user
+from app.schemas.person import Person as personUser
+
+@router_admin.get(
+    "/getadminroles",
+    response_model=List[user_person],
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def get_roles(db: Session = Depends(get_db)):
+    return LocalImpl(db).get_user_roles()
+
+
+
+@router_admin.get(
+    "/get-users-admin-list",
+    response_model=List[user_person],
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def get_users_admin(db: Session = Depends(get_db)):
+    return LocalImpl(db).get_user_admin_collection()
+
+@router_admin.put(
+    "/deleteuseradmin",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def delete_user(person_id: int, db: Session = Depends(get_db)):
+    return LocalImpl(db).delete_user(person_id)
+
+
+
+@router_admin.put(
+    "/updateuseradmin",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def update_user(user_id: user_person, db: Session = Depends(get_db)):
+    return LocalImpl(db).update_user(user_id)
+
+
+@router_admin.get(
+    "/getuseradminbyid",
+    response_model=personUser,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
+    return LocalImpl(db).get_user_by_id(user_id)
+
+
+@router_admin.post(
+    "/createuseradmin",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def create_person(person: user_person, db: Session = Depends(get_db)):
+    return LocalImpl(db).create_user(person)
+async def set_admin_status_to_person(
+    person_id: int, admin_status_id: int, db: Session = Depends(get_db)
+):
+    return LocalImpl(db).set_admin_status_to_person(person_id, admin_status_id)
+
 
 
 @router_admin.delete("/person", name="Remove a Person",
@@ -48,4 +118,5 @@ async def persons_accepted(db: Session = Depends(get_db)):
 @router_admin.get("/persons", name= "List of persons", response_model=List[PersonsReduced], description="List of all Persons in the system")
 async def persons(db: Session = Depends(get_db)):
     return list_of_persons_in_general(db)
+
 

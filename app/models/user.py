@@ -15,6 +15,7 @@ class User(Base):
     id_user_status = Column(Integer, nullable=True)
     is_admin = Column(Integer, nullable=False, default=0)
     is_mail_validate = Column(Integer, nullable=True, default=0)
+    id_role = Column(Integer, nullable=True)
 
     @staticmethod
     def encrypt_pwd(password):
@@ -29,11 +30,12 @@ class User(Base):
         return bool(self.is_admin)
 
     def __init__(
-        self, username: str, password: str, id_person: int, id_user_status: int,
-        is_admin: bool = False
+        self, username: str, password: str, id_person: int, id_user_status: int, id_role: int,
+        is_admin: bool = False, 
     ):
         self.username = username
         self.password = self.encrypt_pwd(password)
         self.id_person = id_person
         self.id_user_status = id_user_status
         self.is_admin = is_admin
+        self.id_role = id_role

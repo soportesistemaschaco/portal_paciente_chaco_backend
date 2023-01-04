@@ -37,6 +37,7 @@ class PersonUser(BaseModel):
     password: Optional[str]
     id_person: Optional[int]
     id_user_status: Optional[int]
+    id_role: Optional[int]
 
     @validator("birthdate", pre=True)
     def parse_birthdate(cls, value):
@@ -44,4 +45,5 @@ class PersonUser(BaseModel):
             value,
             "%d/%m/%Y"
         )
+
 
