@@ -50,6 +50,18 @@ async def version():
     return {"version": version}
 
 
+@router_local.get("/indicador_usuarios_activos")
+async def indicador_usuarios_activos(db: Session = Depends(get_db)):
+    contador = LocalImpl(db).indicador_usuarios_activos()
+    return contador
+
+
+@router_local.get("/indicador_grupo_familiar")
+async def indicador_grupo_familiar(db: Session = Depends(get_db)):
+    result = LocalImpl(db).indicador_grupo_familiar()
+    return result
+
+
 @router_local.post(
     "/login-admin",
     response_model=Token,
