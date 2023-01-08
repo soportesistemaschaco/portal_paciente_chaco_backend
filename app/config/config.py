@@ -39,6 +39,8 @@ WHITE_LIST_PATH = (
     LR_BASE_API + "/static",
     LR_BASE_API + "/efectores",
     LR_BASE_API + "/documenttype",
+    LR_BASE_API + "/indicador_usuarios_activos",
+    LR_BASE_API + "/indicador_grupo_familiar",
     "/docs",
     "/openapi.json",
     "/favicon.ico",

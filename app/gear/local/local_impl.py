@@ -6,6 +6,7 @@ from typing import Optional, Union
 from fastapi import Request, status, File, UploadFile
 from fastapi.responses import Response
 from jose.exceptions import JWTError
+from sqlalchemy import func
 from sqlalchemy.exc import PendingRollbackError
 from sqlalchemy.orm import Session
 
@@ -180,6 +181,25 @@ class LocalImpl:
         except Exception as e:
             self.log.log_error_message(e, self.module)
         return False
+
+    def indicador_usuarios_activos(self) -> int:
+        try:
+            contador = self.db.query(model_user.id_user_status.like(1)).count()
+        except Exception as e:
+            self.db.rollback()
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message="There's no active users.", code=417)
+        return contador
+
+    def indicador_grupo_familiar(self) -> int:
+        contadores = []
+        try:
+            contadores = self.db.query(model_person, func.count(model_person.identification_number_master)).group_by(model_person.identification_number_master).all()
+        except Exception as e:
+            self.db.rollback()
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message="No family groups", code=417)
+        return contadores
 
     def set_expiration_black_list(self, token: str) -> None:
         try:
