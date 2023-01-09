@@ -31,7 +31,7 @@ class User(Base):
 
     def __init__(
         self, username: str, password: str, id_person: int, id_user_status: int, id_role: int,
-        is_admin: bool = False, 
+        is_admin: bool = False
     ):
         self.username = username
         self.password = self.encrypt_pwd(password)
