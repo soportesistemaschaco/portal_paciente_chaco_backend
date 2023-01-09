@@ -505,27 +505,25 @@ class LocalImpl:
 
             for u in collection:
                 result.append({
-                "id": u.id, 
-                "username": u.username, 
-                "password": u.password, 
-                "id_person": u.id_person,
-                "id_user_status": u.id_user_status,
-                "id_role": u.id_role
+                    "id": u.id,
+                    "username": u.username,
+                    "password": u.password,
+                    "id_person": u.id_person,
+                    "id_user_status": u.id_user_status,
+                    "id_role": u.id_role
                 })
             return result
         except Exception as e:
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message=f"Error: {str(e)}", code=417)
 
-
-
     def update_user(self, user: schema_user) -> Union[ResponseOK, ResponseNOK]:
-        print("prueba1",user)
+        print("prueba1", user)
         
         try:
             updated_user = model_user(user.update_forward_refs())
             
-            print("prueba2",updated_user)
+            print("prueba2", updated_user)
            
             existing_user = (
                 self.db.query(model_user)
@@ -549,7 +547,6 @@ class LocalImpl:
             self.db.rollback()
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message="User admin cannot be updated.", code=417)
-        
 
     def update_person(self, person: schema_person) -> Union[ResponseOK, ResponseNOK]:
         try:
@@ -901,14 +898,13 @@ class LocalImpl:
 
             for u in collection:
                 result.append({
-                "id": u.id, 
-                "username": u.username, 
-                "password": u.password, 
-                "id_person": u.id_person,
-                "id_user_status": u.id_user_status,
-                "id_role": u.id_role
+                    "id": u.id,
+                    "username": u.username,
+                    "password": u.password,
+                    "id_person": u.id_person,
+                    "id_user_status": u.id_user_status,
+                    "id_role": u.id_role
                 })
-            
 
             return result
         except Exception as e:
