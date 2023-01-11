@@ -184,7 +184,7 @@ class LocalImpl:
 
     def indicador_usuarios_activos(self) -> int:
         try:
-            contador = self.db.query(model_user.id_user_status.like(1)).count()
+            contador = self.db.query(model_user.id_user_status.like(1)).where(model_user.is_admin == 0).count()
         except Exception as e:
             self.db.rollback()
             self.log.log_error_message(e, self.module)
@@ -194,7 +194,9 @@ class LocalImpl:
     def indicador_grupo_familiar(self) -> int:
         contadores = []
         try:
-            contadores = self.db.query(model_person, func.count(model_person.identification_number_master)).group_by(model_person.identification_number_master).all()
+            contadores = self.db.query(model_person, func.count(model_person.identification_number_master).where(
+                model_person.identification_number_master != None)).group_by(
+                model_person.identification_number_master).all()
         except Exception as e:
             self.db.rollback()
             self.log.log_error_message(e, self.module)
