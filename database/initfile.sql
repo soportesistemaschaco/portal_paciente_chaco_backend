@@ -260,7 +260,7 @@ CREATE TABLE `person` (
   `id_locality` bigint(20) DEFAULT NULL,
   `address_street` varchar(250) COLLATE latin1_spanish_ci DEFAULT NULL,
   `address_number` varchar(100) COLLATE latin1_spanish_ci DEFAULT NULL,
-  `id_usual_institution` bigint(20) DEFAULT NULL,
+  `id_usual_institution` varchar(20) DEFAULT NULL,
   `is_diabetic` tinyint DEFAULT NULL,
   `is_hypertensive` tinyint DEFAULT NULL,
   `is_chronic_respiratory_disease` tinyint DEFAULT NULL,
