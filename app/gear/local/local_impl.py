@@ -191,17 +191,23 @@ class LocalImpl:
             return ResponseNOK(message="There's no active users.", code=417)
         return contador
 
-    def indicador_grupo_familiar(self) -> int:
-        contadores = []
+    def indicador_usuarios_master(self) -> int:
         try:
-            contadores = self.db.query(model_person, func.count(model_person.identification_number_master).where(
-                model_person.identification_number_master != None)).group_by(
-                model_person.identification_number_master).all()
+            contador = self.db.query(model_user).where(model_user.is_admin == 0).count()
+        except Exception as e:
+            self.db.rollback()
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message="There's no active masters.", code=417)
+        return contador
+
+    def indicador_grupo_familiar(self) -> int:
+        try:
+            contador = self.db.query(model_person).where(model_person.identification_number_master!=None).count()
         except Exception as e:
             self.db.rollback()
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message="No family groups", code=417)
-        return contadores
+        return contador
 
     def set_expiration_black_list(self, token: str) -> None:
         try:
