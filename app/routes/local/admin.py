@@ -19,6 +19,8 @@ from app.schemas.responses import ResponseOK, ResponseNOK
 from app.schemas.user import User as user_person
 from app.gear.local.local_impl import LocalImpl
 from app.schemas.person import Person as personUser
+from app.schemas.person_user import PersonUser as person_user
+from app.schemas.user import Userup as userup
 
 
 @router_admin.get(
@@ -57,8 +59,18 @@ async def delete_user(person_id: int, db: Session = Depends(get_db)):
     responses={417: {"model": ResponseNOK}},
     tags=["User"],
 )
-async def update_user(user_id: user_person, db: Session = Depends(get_db)):
+async def update_user(user_id: userup, db: Session = Depends(get_db)):
     return LocalImpl(db).update_user(user_id)
+
+
+@router_admin.put(
+    "/updateuserpassword",
+    response_model=ResponseOK,
+    responses={417: {"model": ResponseNOK}},
+    tags=["User"],
+)
+async def update_user(user_id: userup, db: Session = Depends(get_db)):
+    return LocalImpl(db).update_user_pasword(user_id)
 
 
 @router_admin.get(
