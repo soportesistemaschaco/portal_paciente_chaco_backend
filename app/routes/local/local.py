@@ -56,6 +56,12 @@ async def indicador_usuarios_activos(db: Session = Depends(get_db)):
     return contador
 
 
+@router_local.get("/indicador_usuarios_master")
+async def indicador_usuarios_master(db: Session = Depends(get_db)):
+    contador = LocalImpl(db).indicador_usuarios_master()
+    return contador
+
+
 @router_local.get("/indicador_grupo_familiar")
 async def indicador_grupo_familiar(db: Session = Depends(get_db)):
     result = LocalImpl(db).indicador_grupo_familiar()
