@@ -1,13 +1,16 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import List
+from urllib.parse import urlencode
 
 from fastapi import Depends, HTTPException, status, File, UploadFile
+from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 
-from app.config.config import SECRET_KEY, ALGORITHM
+from app.auth.auth import get_person_dni, create_access_token
+from app.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.gear.local.local_impl import LocalImpl
 from app.gear.log.main_logger import MainLogger, logging
 from app.gear.recover_password.recover_password import (
@@ -79,9 +82,26 @@ async def login_for_access_token(
     responses={401: {"model": HTTPError}},
     tags=["TGD"],
 )
-async def get_tgd(code: str):
+async def get_tgd(code: str, db: Session = Depends(get_db)):
     auth_tgd = AuthTgd()
-    return auth_tgd.get_token_tgd(code)
+    tgd_person = auth_tgd.get_token_tgd(code)
+    dni = tgd_person['tiposDocumentoPersona'][0]['numeroDocumento']
+    person = get_person_dni(dni)
+    if person is None:
+        s_person = schema_create_person(
+            surname=tgd_person['apellidos'],
+            name=tgd_person['name'],
+            identification_number=dni
+        )
+        LocalImpl(db).create_person(s_person)
+        person = get_person_dni(dni)
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": person['dni']}, expires_delta=access_token_expires
+    )
+    person.update({'access_token': access_token})
+    return RedirectResponse(f"https://test-portal.salud.chaco.gob.ar/?{urlencode(person)}")
 
 
 @router_local.post(
