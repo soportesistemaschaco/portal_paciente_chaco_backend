@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.config.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from app.main import get_db
 from app.models.user import User
+from app.models.person import Person
 from app.schemas.token_data import TokenData
 from app.gear.local.local_impl import LocalImpl
 
@@ -38,6 +39,13 @@ def get_user(username: str) -> Optional[User]:
     # return None
     user = LocalImpl(db).get_user_by_username(username=username)
     return user
+
+
+def get_person_dni(dni: str) -> Optional[Person]:
+    log.log_info_message("getting person", module)
+    db = next(get_db())
+    person = LocalImpl(db).get_person_by_dni(dni=dni)
+    return person
 
 
 def authenticate_user(db: Session, username: str, password: str) -> bool:
