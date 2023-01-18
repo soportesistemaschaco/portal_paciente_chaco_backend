@@ -161,6 +161,20 @@ class LocalImpl:
             self.log.log_error_message(e, self.module)
             return None
 
+    def get_person_by_dni(self, dni: str):
+        try:
+            value = (
+                self.db.query(model_person).where(model_person.identification_number == dni).first()
+            )
+            return value
+        except PendingRollbackError as e:
+            self.log.log_error_message(str(e) + " [" + dni + "]", self.module)
+            self.db.rollback()
+            return None
+        except Exception as e:
+            self.log.log_error_message(e, self.module)
+            return None
+
     def delete_user(self, user_id: str):
         try:
             old_user = self.db.query(model_user).where(model_user.id == user_id).first()
