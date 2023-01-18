@@ -96,7 +96,7 @@ async def get_tgd(code: str, db: Session = Depends(get_db)):
     if person is None:
         s_person = schema_create_person(
             surname=tgd_person['apellidos'],
-            name=tgd_person['name'],
+            name=tgd_person['nombres'],
             identification_number=dni
         )
         LocalImpl(db).create_person(s_person)
