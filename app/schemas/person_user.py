@@ -37,6 +37,7 @@ class PersonUser(BaseModel):
     password: Optional[str]
     id_person: Optional[int]
     id_user_status: Optional[int]
+    is_admin: Optional[int]
     id_role: Optional[int]
 
     @validator("birthdate", pre=True)

@@ -129,6 +129,13 @@ class LocalImpl:
         return value
 
     def create_user(self, user: schema_user) -> Union[ResponseOK, ResponseNOK]:
+        buff_person = (
+            self.db.query(model_user)
+            .where(model_user.username == user.username)
+            .first()
+        )
+        if buff_person is not None:
+            return ResponseNOK(value="", message="Admin person already exists.", code=417)
         try:
             new_user = model_user(**user.dict())
             self.db.add(new_user)
@@ -532,6 +539,7 @@ class LocalImpl:
                     "password": u.password,
                     "id_person": u.id_person,
                     "id_user_status": u.id_user_status,
+                    "is_admin": u.is_admin,
                     "id_role": u.id_role
                 })
             return result
@@ -539,36 +547,52 @@ class LocalImpl:
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message=f"Error: {str(e)}", code=417)
 
-    def update_user(self, user: schema_user) -> Union[ResponseOK, ResponseNOK]:
-        print("prueba1", user)
-        
+    def update_user(self, user: schema_userup):
+        buff_person = (
+            self.db.query(model_user)
+            .where(model_user.username == user.username)
+            .first()
+        )
+        if buff_person is not None:
+            return ResponseNOK(value="", message="Admin person already exists.", code=417)
         try:
-            updated_user = model_user(user.update_forward_refs())
-            
-            print("prueba2", updated_user)
-           
             existing_user = (
                 self.db.query(model_user)
-                .where(model_user.id_person == updated_user.id_person)
+                .where(model_user.id == user.id)
                 .first()
             )
-
-            existing_user.username: updated_user.username
-            existing_user.password: updated_user.password
-            existing_user.id_user_status: updated_user.id_user_status
-            existing_user.id_role: updated_user.id_role
-
+            existing_user.username = user.username
+            existing_user.id_user_status = user.id_user_status
+            existing_user.id_person = user.id_person
+            existing_user.is_admin = user.is_admin
+            existing_user.id_role = user.id_role
             self.db.commit()
-            return ResponseOK(
-                value=str(existing_user.id),
-                message="User admin updated successfully.",
-                code=201,
-            )
 
         except Exception as e:
             self.db.rollback()
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message="User admin cannot be updated.", code=417)
+
+        return ResponseOK(message="User updated successfully.", code=201)
+
+    def update_user_pasword(self, user: schema_user) -> Union[ResponseOK, ResponseNOK]:
+        try:
+            existing_user = (
+                self.db.query(model_user)
+                .where(model_user.id == user.id)
+                .first()
+            )
+
+            existing_user.password = user.password
+
+            self.db.commit()
+
+        except Exception as e:
+            self.db.rollback()
+            self.log.log_error_message(e, self.module)
+            return ResponseNOK(message="User password not updated.", code=417)
+
+        return ResponseOK(message="User password updated successfully.", code=201)
 
     def update_person(self, person: schema_person) -> Union[ResponseOK, ResponseNOK]:
         try:
@@ -925,6 +949,7 @@ class LocalImpl:
                     "password": u.password,
                     "id_person": u.id_person,
                     "id_user_status": u.id_user_status,
+                    "is_admin": u.is_admin,
                     "id_role": u.id_role
                 })
 
