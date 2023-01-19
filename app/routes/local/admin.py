@@ -35,7 +35,7 @@ async def get_roles(db: Session = Depends(get_db)):
 
 @router_admin.get(
     "/get-users-admin-list",
-    response_model=List[user_person],
+    response_model=List[userup],
     responses={417: {"model": ResponseNOK}},
     tags=["User"],
 )
