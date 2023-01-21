@@ -6,9 +6,10 @@ from typing import Optional, Union
 from fastapi import Request, status, File, UploadFile
 from fastapi.responses import Response
 from jose.exceptions import JWTError
-from sqlalchemy import func
 from sqlalchemy.exc import PendingRollbackError
 from sqlalchemy.orm import Session
+from jose import jwt
+
 
 from app.config.config import (
     WHITE_LIST_PATH,
@@ -17,6 +18,8 @@ from app.config.config import (
     LOCAL_FILE_UPLOAD_DIRECTORY,
     LOCAL_FILE_DOWNLOAD_DIRECTORY,
     VALIDATE_EMAIL_PATH,
+    SECRET_KEY,
+    ALGORITHM
 )
 from app.gear.local.bearer_token import BearerToken
 from app.gear.log.main_logger import MainLogger, logging
@@ -44,7 +47,7 @@ from app.schemas.person_user import PersonUser as schema_person_user
 from app.schemas.responses import ResponseNOK, ResponseOK
 from app.schemas.user import User as schema_user
 from app.schemas.user import Userup as schema_userup
-
+JWT_AUD = "recovery-password"
 
 class LocalImpl:
 
@@ -168,20 +171,6 @@ class LocalImpl:
             self.log.log_error_message(e, self.module)
             return None
 
-    def get_person_by_dni(self, dni: str):
-        try:
-            value = (
-                self.db.query(model_person).where(model_person.identification_number == dni).first()
-            )
-            return value
-        except PendingRollbackError as e:
-            self.log.log_error_message(str(e) + " [" + dni + "]", self.module)
-            self.db.rollback()
-            return None
-        except Exception as e:
-            self.log.log_error_message(e, self.module)
-            return None
-
     def delete_user(self, user_id: str):
         try:
             old_user = self.db.query(model_user).where(model_user.id == user_id).first()
@@ -202,33 +191,6 @@ class LocalImpl:
         except Exception as e:
             self.log.log_error_message(e, self.module)
         return False
-
-    def indicador_usuarios_activos(self) -> int:
-        try:
-            contador = self.db.query(model_user.id_user_status.like(1)).where(model_user.is_admin == 0).count()
-        except Exception as e:
-            self.db.rollback()
-            self.log.log_error_message(e, self.module)
-            return ResponseNOK(message="There's no active users.", code=417)
-        return contador
-
-    def indicador_usuarios_master(self) -> int:
-        try:
-            contador = self.db.query(model_user).where(model_user.is_admin == 0).count()
-        except Exception as e:
-            self.db.rollback()
-            self.log.log_error_message(e, self.module)
-            return ResponseNOK(message="There's no active masters.", code=417)
-        return contador
-
-    def indicador_grupo_familiar(self) -> int:
-        try:
-            contador = self.db.query(model_person).where(model_person.identification_number_master!=None).count()
-        except Exception as e:
-            self.db.rollback()
-            self.log.log_error_message(e, self.module)
-            return ResponseNOK(message="No family groups", code=417)
-        return contador
 
     def set_expiration_black_list(self, token: str) -> None:
         try:
@@ -534,9 +496,9 @@ class LocalImpl:
 
             for u in collection:
                 result.append({
-                    "id": u.id,
-                    "username": u.username,
-                    "password": u.password,
+                    "id": u.id, 
+                    "username": u.username, 
+                    "password": u.password, 
                     "id_person": u.id_person,
                     "id_user_status": u.id_user_status,
                     "is_admin": u.is_admin,
@@ -547,7 +509,9 @@ class LocalImpl:
             self.log.log_error_message(e, self.module)
             return ResponseNOK(message=f"Error: {str(e)}", code=417)
 
+
     def update_user(self, user: schema_userup):
+        
         buff_person = (
             self.db.query(model_user)
             .where(model_user.username == user.username)
@@ -555,36 +519,41 @@ class LocalImpl:
         )
         if buff_person is not None:
             return ResponseNOK(value="", message="Admin person already exists.", code=417)
+
         try:
             existing_user = (
                 self.db.query(model_user)
                 .where(model_user.id == user.id)
                 .first()
             )
+
             existing_user.username = user.username
             existing_user.id_user_status = user.id_user_status
             existing_user.id_person = user.id_person
             existing_user.is_admin = user.is_admin
             existing_user.id_role = user.id_role
+
             self.db.commit()
 
         except Exception as e:
             self.db.rollback()
             self.log.log_error_message(e, self.module)
-            return ResponseNOK(message="User admin cannot be updated.", code=417)
+            return ResponseNOK(message="User not updated.", code=417)
 
         return ResponseOK(message="User updated successfully.", code=201)
 
-    def update_user_pasword(self, user: schema_user) -> Union[ResponseOK, ResponseNOK]:
+
+
+    def update_user_pasword(self, user: schema_userup) -> Union[ResponseOK, ResponseNOK]:
+        
         try:
             existing_user = (
                 self.db.query(model_user)
                 .where(model_user.id == user.id)
                 .first()
             )
-
-            existing_user.password = user.password
-
+            existing_user.password = model_user.encrypt_pwd(user.password)
+        
             self.db.commit()
 
         except Exception as e:
@@ -593,6 +562,7 @@ class LocalImpl:
             return ResponseNOK(message="User password not updated.", code=417)
 
         return ResponseOK(message="User password updated successfully.", code=201)
+
 
     def update_person(self, person: schema_person) -> Union[ResponseOK, ResponseNOK]:
         try:
@@ -639,7 +609,7 @@ class LocalImpl:
             existing_person.locality = updated_person.locality
             existing_person.email = updated_person.email
             existing_person.id_person_status = updated_person.id_person_status
-          
+            
 
             existing_person.is_deleted = None
 
@@ -944,14 +914,15 @@ class LocalImpl:
 
             for u in collection:
                 result.append({
-                    "id": u.id,
-                    "username": u.username,
-                    "password": u.password,
+                    "id": u.id, 
+                    "username": u.username, 
+                    "password": u.password, 
                     "id_person": u.id_person,
                     "id_user_status": u.id_user_status,
                     "is_admin": u.is_admin,
                     "id_role": u.id_role
                 })
+            
 
             return result
         except Exception as e:
