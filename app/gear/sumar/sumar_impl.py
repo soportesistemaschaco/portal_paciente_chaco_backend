@@ -33,7 +33,13 @@ class SumarImplChaco:
     def get_efectores(self) -> Dict:
         url = f"{EFECTORES_ENDPOINT}"
         response = requests.get(url, headers=self.header)
-        return json.loads(response.text)
+        result = json.loads(response.text)
+        efectores = []
+
+        for i in result:
+            if i['cuie'] == 'H00895' or i['cuie'] == 'H00608' or i['cuie'] == 'H00613' or i['cuie'] == 'H00494' or i['cuie'] == 'H00878':
+                efectores.append(i)
+        return efectores
 
 
 class Vacunacion:
