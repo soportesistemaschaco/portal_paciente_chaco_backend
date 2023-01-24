@@ -583,7 +583,7 @@ class LocalImpl:
                 .first()
             )
 
-            existing_user.password = user.password
+            existing_user.password = model_user.encrypt_pwd(user.password)
 
             self.db.commit()
 
