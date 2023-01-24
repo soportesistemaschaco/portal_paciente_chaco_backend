@@ -22,6 +22,17 @@ async def get_efectores() -> Dict:
     return sumar_impl.get_efectores()
 
 
+@router_sumar.get("/efectores-priorizados", tags=["SUMAR"])
+async def get_efectores_priorizados() -> Dict:
+    sumar_impl = SumarImplChaco().get_efectores()
+    efectores = []
+
+    for i in sumar_impl:
+        if i['cuie'] == 'H00895' or i['cuie'] == 'H00608' or i['cuie'] == 'H00613' or i['cuie'] == 'H00494' or i['cuie'] == 'H00878':
+            efectores.append(i)
+    return efectores
+
+
 @router_sumar.get("/vaccines", tags=["SUMAR"])
 async def get_vaccines(dni: str) -> Dict:
     sumar_impl = Vacunacion()
