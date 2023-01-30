@@ -73,3 +73,8 @@ class Person(Base):
         self.locality = locality
         self.email = email
         self.id_person_status = id_person_status
+
+    def to_json(self):
+        return {
+            c.id: getattr(self, c.id) for c in self.__table__.columns
+        }
