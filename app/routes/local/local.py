@@ -107,7 +107,7 @@ async def get_tgd(code: str, db: Session = Depends(get_db)):
         data={"sub": person['dni']}, expires_delta=access_token_expires
     )
     person.update({'access_token': access_token})
-    return RedirectResponse(f"https://test-portal.salud.chaco.gob.ar/?{urlencode(person)}")
+    return RedirectResponse(f"https://test-portal.salud.chaco.gob.ar?{urlencode(person)}")
 
 
 @router_local.post(
