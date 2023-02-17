@@ -173,7 +173,7 @@ class LocalImpl:
             value = (
                 self.db.query(model_person).where(model_person.identification_number == dni).first()
             )
-            return value.to_json
+            return value.to_json()
         except PendingRollbackError as e:
             self.log.log_error_message(str(e) + " [" + dni + "]", self.module)
             self.db.rollback()
