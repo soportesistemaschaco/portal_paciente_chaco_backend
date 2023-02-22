@@ -76,5 +76,5 @@ class Person(Base):
 
     def to_json(self):
         return {
-            c.id: getattr(self, c.id) for c in self.__table__.columns
+            c.name: getattr(self, c.name) for c in self.__table__.columns
         }
