@@ -110,16 +110,16 @@ async def get_tgd(code: str, db: Session = Depends(get_db)):
     return RedirectResponse(f"https://test-portal.salud.chaco.gob.ar/login?{urlencode(person)}")
 
 
-@router_local.post(
-    "/login",
-    response_model=PersonLogged,
-    responses={401: {"model": HTTPError}},
-    tags=["Login & Logout"],
-)
-async def login_person(
-    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
-):
-    return auth.login_person(db, form_data)
+# @router_local.post(
+#    "/login",
+#    response_model=PersonLogged,
+#    responses={401: {"model": HTTPError}},
+#    tags=["Login & Logout"],
+# )
+# async def login_person(
+#    db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
+# ):
+#    return auth.login_person(db, form_data)
 
 
 @router_local.post("/logout", tags=["Login & Logout"])
