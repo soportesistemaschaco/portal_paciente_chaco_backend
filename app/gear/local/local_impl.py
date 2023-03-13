@@ -104,16 +104,21 @@ class LocalImpl:
                 request.scope["method"],
                 bearer_token.payload,
                 request,
+            ) and not self.is_person_authorized(
+                request.scope["path"],
+                request.scope["method"],
+                bearer_token.payload,
+                request
             ):
                 self.log.log_error_message(
-                    "Request not authorized for user "
+                    "Request not authorized for user or person "
                     + bearer_token.payload.get("sub"),
                     self.module,
                 )
 
                 return Response(
                     status_code=status.HTTP_401_UNAUTHORIZED,
-                    content="Request not authorized for current user.",
+                    content="Request not authorized for current user or person.",
                 )
 
         response = await call_next(request)
@@ -296,6 +301,24 @@ class LocalImpl:
 
             # return Permission.user_is_authorized(username, path, method)
             return Permission.user_is_authorized2(username, request)
+        except Exception as e:
+            MainLogger().log_error_message(e, logging.getLogger(__name__))
+            return False
+
+    def is_person_authorized(
+            self, path: str, method: str, payload: Optional[dict], request=None
+    ) -> bool:
+        try:
+            if payload is None:
+                return False
+            dni = payload.get("sub")
+
+            # check if the person is in DB
+            person = self.db.query(model_person).where(model_person.identification_number == dni).first()
+            if person is None:
+                return False
+
+            return Permission.person_is_authorized(dni, request)
         except Exception as e:
             MainLogger().log_error_message(e, logging.getLogger(__name__))
             return False
