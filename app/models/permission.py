@@ -7,6 +7,7 @@ from starlette.routing import Match
 
 from app.config.config import DEBUG_ENABLED
 from app.config.database import Base, SessionLocal
+from app.models.person import Person
 from app.models.role_permission import RolePermission
 from app.models.user import User
 from app.models.user_role import UserRole
@@ -74,6 +75,28 @@ class Permission(Base):
 
         if name in ADMIN_ROUTES:
             if user.is_admin:
+                return True
+            return False
+        return True
+
+    @staticmethod
+    def person_is_authorized(dni: str, request: Request) -> bool:
+        db: Session = SessionLocal()
+        routes = request.app.router.routes
+
+        name = ''
+
+        for route in routes:
+            match, scope = route.matches(request)
+            if match == Match.FULL:
+                name = route.name
+
+        person = db.query(Person).where(Person.identification_number == dni).first()
+
+        db.close()
+
+        if name in ADMIN_ROUTES:
+            if person.is_admin:
                 return True
             return False
         return True
