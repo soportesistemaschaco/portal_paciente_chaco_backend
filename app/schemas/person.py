@@ -48,9 +48,10 @@ class Person(BaseModel):
     is_admin: Optional[int]
     id_role: Optional[int]
 
-
     @validator("birthdate", pre=True)
     def parse_birthdate(cls, value):
+        if value is None:
+            return None
         # XXX: Tenemos un problema entre schemas y modelos que no son compatibles
         # por lo que esto es necesario. No eliminar.
         if isinstance(value, str):
