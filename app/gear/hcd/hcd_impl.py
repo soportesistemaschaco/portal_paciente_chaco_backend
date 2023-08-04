@@ -25,6 +25,8 @@ class HSIImplChaco:
     def get_hc(self, dni: str, dni_tipo: int, genero_id: int) -> Dict:
         url = f"{HC_ENDPOINT}?documentoNro={dni}&tipoDocumentoId={dni_tipo}&generoId={genero_id}"
         response = requests.get(url, headers=self.header)
+        if response.status_code == 204:
+            return []
         return json.loads(response.text)
 
     def get_genders(self) -> Dict:
