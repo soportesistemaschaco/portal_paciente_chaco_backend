@@ -7,7 +7,7 @@ API_CODE = os.getenv("API_CODE")
 # API SERVICE
 API_SERVICE = "https://hc.salud.chaco.gob.ar:9440/api/v1/ExternalService/"
 TURNO_ENDPOINT = f"{API_SERVICE}Turnos"
-HC_ENDPOINT = f"{API_SERVICE}Allergies"
+HC_ENDPOINT = f"{API_SERVICE}ResumenHistoriaClinica"
 
 # API PERSON
 API_PERSON = "https://hc.salud.chaco.gob.ar:9440/api/v1/Person/"
